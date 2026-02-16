@@ -37,7 +37,9 @@ export default function NavBar() {
       </div>
       <div className="w-auto flex justify-start items-center gap-5">
         <h5 className="text-xs font-semibold text-black">LOG IN</h5>
-        <Button variant="default" size="sm" className="text-xs bg-[#f87941]">GET STARTED</Button>
+        <Button variant="default" size="sm" className="text-xs bg-[#f87941]">
+          <Link href="/register">GET STARTED</Link>
+        </Button>
       </div>
     </nav>
   );
