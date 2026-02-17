@@ -54,7 +54,7 @@ export default function VerifyEmail() {
       reset({
         code: "",
       });
-      router.push("/");
+      router.push("/login");
       toast.success("Email verified successfully");
       toast.info("Account is created successfully");
     },

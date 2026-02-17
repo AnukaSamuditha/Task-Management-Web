@@ -19,7 +19,16 @@ axiosInstance.interceptors.response.use(
     ) {
       originalRequest._retry = true;
       try {
-        await axiosInstance.post("/auth/refresh");
+        const res = await axiosInstance.post("/auth/refresh");
+
+        const { accessToken } = res.data;
+
+        if (accessToken) {
+          axiosInstance.defaults.headers.common["Authorization"] =
+            `Bearer ${accessToken}`;
+
+          originalRequest.headers["Authorization"] = `Bearer ${accessToken}`;
+        }
 
         return axiosInstance(originalRequest);
       } catch (refreshError) {

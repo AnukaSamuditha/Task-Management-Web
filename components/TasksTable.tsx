@@ -13,12 +13,16 @@ import {
   type VisibilityState,
 } from "@tanstack/react-table";
 import {
+  Activity,
   AlarmClock,
   Blocks,
   CalendarDays,
   ChartSpline,
   ChevronDown,
+  CircleCheck,
+  CircleDot,
   MoreHorizontal,
+  Soup,
   SquareActivity,
 } from "lucide-react";
 
@@ -96,8 +100,8 @@ export function TaskTable() {
       accessorFn: (row) => row?.name,
       header: () => (
         <div className="flex justify-start items-center gap-1">
-          <Blocks size={`15`} color="#f87941" />
-          <p className="text-[#f87941]">Name</p>
+          <Blocks size={`15`} className="text-muted-foreground" />
+          <p className="text-muted-foreground">Name</p>
         </div>
       ),
       cell: ({ getValue }) => {
@@ -112,16 +116,18 @@ export function TaskTable() {
       filterFn: "equalsString",
       header: () => (
         <div className="flex justify-start items-center gap-1">
-          <SquareActivity size={`15`} color="#f87941" />
-          <p className="text-[#f87941]">Priority</p>
+          <SquareActivity size={`15`} className="text-muted-foreground" />
+          <p className="text-muted-foreground">Priority</p>
         </div>
       ),
       cell: ({ getValue }) => (
         <Badge
           variant="outline"
-          className="capitalize text-muted-foreground px-1.5"
+          className={`capitalize px-1.5 ${getValue() === "low" ? "bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-300" : getValue() === "medium" ? "bg-purple-50 text-purple-700 dark:bg-purple-950 dark:text-purple-300" : "bg-orange-50 text-orange-700 dark:bg-orange-950 dark:text-orange-300"}`}
         >
-          <IconCircleCheckFilled className="fill-green-500" />
+          <IconCircleCheckFilled
+            className={`fill-green-500 ${getValue() === "low" ? "fill-green-500" : getValue() === "medium" ? "fill-purple-500" : "fill-orange-500"}`}
+          />
           {getValue<string>()}
         </Badge>
       ),
@@ -131,12 +137,21 @@ export function TaskTable() {
       accessorFn: (row) => row?.status,
       header: () => (
         <div className="flex justify-start items-center gap-1">
-          <ChartSpline size={`15`} color="#f87941" />
-          <p className="text-[#f87941]">Status</p>
+          <ChartSpline size={`15`} className="text-muted-foreground" />
+          <p className="text-muted-foreground">Status</p>
         </div>
       ),
       cell: ({ getValue }) => (
         <Badge variant="outline" className="capitalize">
+          {getValue() === "pending" ? (
+            <CircleDot size={15} />
+          ) : getValue() === "started" ? (
+            <Soup size={15} />
+          ) : getValue() === "ongoing" ? (
+            <Activity size={15} />
+          ) : (
+            <CircleCheck size={15} />
+          )}
           {getValue<string>()}
         </Badge>
       ),
@@ -146,8 +161,8 @@ export function TaskTable() {
       accessorFn: (row) => row?.time,
       header: () => (
         <div className="flex justify-start items-center gap-1">
-          <AlarmClock size={`15`} color="#f87941" />
-          <p className="text-[#f87941]">Time</p>
+          <AlarmClock size={`15`} className="text-muted-foreground" />
+          <p className="text-muted-foreground">Time</p>
         </div>
       ),
       cell: ({ getValue }) => {
@@ -159,8 +174,8 @@ export function TaskTable() {
       accessorFn: (row) => row?.createdAt,
       header: () => (
         <div className="flex justify-start items-center gap-1">
-          <CalendarDays size={`15`} color="#f87941" />
-          <p className="text-[#f87941]">Created</p>
+          <CalendarDays size={`15`} className="text-muted-foreground" />
+          <p className="text-muted-foreground">Created</p>
         </div>
       ),
       cell: ({ getValue }) => (
@@ -305,7 +320,7 @@ export function TaskTable() {
             ))}
           </TableHeader>
           <TableBody>
-            {tasksQuery.data?.tasks && table.getRowModel().rows?.length ? (
+            {tasksQuery.data?.tasks && table.getRowModel().rows?.length > 0 ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
@@ -324,6 +339,15 @@ export function TaskTable() {
                   ))}
                 </TableRow>
               ))
+            ) : tasksQuery.isFetched ? (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="w-full h-24 text-center relative"
+                >
+                  <p className="text-sm text-muted-foreground">No Tasks Yet!</p>
+                </TableCell>
+              </TableRow>
             ) : (
               <TableRow>
                 <TableCell

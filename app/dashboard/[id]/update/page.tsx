@@ -103,6 +103,7 @@ export default function UpdateTaskPage() {
         </div>
         <div className="w-auto flex justify-center items-center gap-3">
           <Button
+            type="button"
             onClick={() => router.push("/dashboard")}
             variant="outline"
             size="lg"
