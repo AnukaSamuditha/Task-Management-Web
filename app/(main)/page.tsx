@@ -1,8 +1,13 @@
+"use client";
 import { AnimatedShinyText } from "@/components/ui/animated-shiny-text";
 import { Button } from "@/components/ui/button";
+import { useUserStore } from "@/stores/user.store";
 import { ArrowRight, ArrowRightIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
+  const { user } = useUserStore();
+  const router = useRouter();
   return (
     <div className="w-full h-screen px-4 bg-[#f8f6fc]">
       <div className="w-full h-auto flex flex-col justify-center items-center pt-16">
@@ -21,12 +26,19 @@ export default function Home() {
         </p>
         <div className="flex justify-center items-center gap-4 mt-8">
           <Button
+            onClick={() =>
+              user ? router.push("/dashbaord") : router.push("/login")
+            }
             variant="default"
             className="text-xs bg-[#f87941] flex justify-center items-center gap-1"
           >
             START MANAGING <ArrowRight />
           </Button>
-          <Button variant="outline" className="text-xs">
+          <Button
+            onClick={() => router.push("/register")}
+            variant="outline"
+            className="text-xs"
+          >
             LEARN MORE
           </Button>
         </div>
