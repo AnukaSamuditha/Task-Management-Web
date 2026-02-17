@@ -25,6 +25,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useForm, Controller } from "react-hook-form";
 import { toast } from "sonner";
 import z from "zod";
+import { Suspense } from "react";
 
 export default function VerifyEmailPage() {
   const params = useSearchParams();
@@ -85,86 +86,88 @@ export default function VerifyEmailPage() {
   };
 
   return (
-    <div className="w-full h-screen flex justify-center items-center bg-[#f8f6fc]">
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Card className="mx-auto max-w-md">
-          <CardHeader>
-            <CardTitle>Verify your Email</CardTitle>
-            <CardDescription>
-              Enter the verification code we sent to your email address:{" "}
-              {email && <span className="font-medium">{email}</span>}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Field>
-              <div className="flex items-center justify-between">
-                <FieldLabel htmlFor="otp-verification">
-                  Verification code
-                </FieldLabel>
+    <Suspense>
+      <div className="w-full h-screen flex justify-center items-center bg-[#f8f6fc]">
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Card className="mx-auto max-w-md">
+            <CardHeader>
+              <CardTitle>Verify your Email</CardTitle>
+              <CardDescription>
+                Enter the verification code we sent to your email address:{" "}
+                {email && <span className="font-medium">{email}</span>}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Field>
+                <div className="flex items-center justify-between">
+                  <FieldLabel htmlFor="otp-verification">
+                    Verification code
+                  </FieldLabel>
+                  <Button
+                    onClick={() => resendCodeMutation.mutate()}
+                    disabled={resendCodeMutation.isPending}
+                    variant="outline"
+                    size="xs"
+                  >
+                    <RefreshCwIcon />
+                    Resend Code
+                  </Button>
+                </div>
+                <div className="w-full flex justify-center items-center">
+                  <Controller
+                    name="code"
+                    control={control}
+                    render={({ field }) => (
+                      <InputOTP
+                        value={field.value}
+                        maxLength={4}
+                        onChange={field.onChange}
+                        id="otp-verification"
+                        required
+                      >
+                        <InputOTPGroup className="*:data-[slot=input-otp-slot]:h-12 *:data-[slot=input-otp-slot]:w-11 *:data-[slot=input-otp-slot]:text-xl">
+                          <InputOTPSlot index={0} />
+                          <InputOTPSlot index={1} />
+                        </InputOTPGroup>
+                        <InputOTPSeparator className="mx-2" />
+                        <InputOTPGroup className="*:data-[slot=input-otp-slot]:h-12 *:data-[slot=input-otp-slot]:w-11 *:data-[slot=input-otp-slot]:text-xl">
+                          <InputOTPSlot index={2} />
+                          <InputOTPSlot index={3} />
+                        </InputOTPGroup>
+                      </InputOTP>
+                    )}
+                  />
+                </div>
+                <FieldDescription>
+                  <Link href="#">
+                    I no longer have access to this email address.
+                  </Link>
+                </FieldDescription>
+              </Field>
+            </CardContent>
+            <CardFooter>
+              <Field>
                 <Button
-                  onClick={() => resendCodeMutation.mutate()}
-                  disabled={resendCodeMutation.isPending}
-                  variant="outline"
-                  size="xs"
+                  type="submit"
+                  className="w-full bg-[#f87941]"
+                  disabled={verifyMutation.isPending || !isValid}
                 >
-                  <RefreshCwIcon />
-                  Resend Code
+                  Verify
                 </Button>
-              </div>
-              <div className="w-full flex justify-center items-center">
-                <Controller
-                  name="code"
-                  control={control}
-                  render={({ field }) => (
-                    <InputOTP
-                      value={field.value}
-                      maxLength={4}
-                      onChange={field.onChange}
-                      id="otp-verification"
-                      required
-                    >
-                      <InputOTPGroup className="*:data-[slot=input-otp-slot]:h-12 *:data-[slot=input-otp-slot]:w-11 *:data-[slot=input-otp-slot]:text-xl">
-                        <InputOTPSlot index={0} />
-                        <InputOTPSlot index={1} />
-                      </InputOTPGroup>
-                      <InputOTPSeparator className="mx-2" />
-                      <InputOTPGroup className="*:data-[slot=input-otp-slot]:h-12 *:data-[slot=input-otp-slot]:w-11 *:data-[slot=input-otp-slot]:text-xl">
-                        <InputOTPSlot index={2} />
-                        <InputOTPSlot index={3} />
-                      </InputOTPGroup>
-                    </InputOTP>
-                  )}
-                />
-              </div>
-              <FieldDescription>
-                <Link href="#">
-                  I no longer have access to this email address.
-                </Link>
-              </FieldDescription>
-            </Field>
-          </CardContent>
-          <CardFooter>
-            <Field>
-              <Button
-                type="submit"
-                className="w-full bg-[#f87941]"
-                disabled={verifyMutation.isPending || !isValid}
-              >
-                Verify
-              </Button>
-              <div className="text-muted-foreground text-sm">
-                Having trouble signing in?{" "}
-                <Link
-                  href="#"
-                  className="hover:text-primary underline underline-offset-4 transition-colors"
-                >
-                  Contact support
-                </Link>
-              </div>
-            </Field>
-          </CardFooter>
-        </Card>
-      </form>
-    </div>
+                <div className="text-muted-foreground text-sm">
+                  Having trouble signing in?{" "}
+                  <Link
+                    href="#"
+                    className="hover:text-primary underline underline-offset-4 transition-colors"
+                  >
+                    Contact support
+                  </Link>
+                </div>
+              </Field>
+            </CardFooter>
+          </Card>
+        </form>
+      </div>
+    </Suspense>
   );
 }
