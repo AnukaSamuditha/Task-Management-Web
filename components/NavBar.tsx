@@ -1,7 +1,10 @@
+"use client"
 import Link from "next/link";
 import { Button } from "./ui/button";
+import { useUserStore } from "@/stores/user.store";
 
 export default function NavBar() {
+  const { user } = useUserStore();
   return (
     <nav className="w-full h-15 bg-[#f8f6fc] border flex justify-between items-center px-[15%]">
       <div className="w-auto flex justify-start items-center gap-8">
@@ -24,15 +27,15 @@ export default function NavBar() {
           <Link className="text-sm text-muted-foreground" href="/">
             Home
           </Link>
-          <Link className="text-sm text-muted-foreground" href="/">
-            About
-          </Link>
-          <Link className="text-sm text-muted-foreground" href="/">
+          {user && <Link className="text-sm text-muted-foreground" href="/dashboard">
+            Dashboard
+          </Link>}
+          {/* <Link className="text-sm text-muted-foreground" href="/">
             Community
           </Link>
           <Link className="text-sm text-muted-foreground" href="/">
             Contact
-          </Link>
+          </Link> */}
         </div>
       </div>
       <div className="w-auto flex justify-start items-center gap-5">
