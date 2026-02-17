@@ -44,7 +44,7 @@ import {
 import { useMutation, useQuery } from "@tanstack/react-query";
 import axiosInstance from "@/providers/axios";
 import { Badge } from "./ui/badge";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { IconCircleCheckFilled } from "@tabler/icons-react";
 import { Spinner } from "./ui/spinner";
 import z from "zod";
@@ -203,8 +203,6 @@ export function TaskTable() {
       desc: true,
     },
   ]);
-  const searchParams = useSearchParams();
-  const statusFromURL = searchParams.get("status");
 
   const [isDeleteButtonOpen, setIsDeleteButtonOpen] =
     React.useState<boolean>(false);
@@ -212,7 +210,6 @@ export function TaskTable() {
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
   const router = useRouter();
-  const pathname = usePathname();
 
   React.useEffect(() => {
     const hasSelection = Object.keys(rowSelection).length > 0;
