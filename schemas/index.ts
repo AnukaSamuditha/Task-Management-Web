@@ -15,3 +15,11 @@ export const userSchema = z.object({
 export const verificationCodeSchema = z.object({
   code: z.string().min(4).max(4).regex(/^\d+$/, "Code must contain only numbers")
 })
+
+export const loginSchema = z.object({
+  email: z.email("Invalid email address."),
+  password: z
+    .string()
+    .min(8, "Password must be at least 8 characters")
+    .max(16, "Password cannot be more than 16 characters"),
+});
