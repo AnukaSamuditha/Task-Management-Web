@@ -32,6 +32,7 @@ export default function RegisterPage() {
     register,
     reset,
     handleSubmit,
+    getValues,
     formState: { errors, isValid },
   } = useForm<z.infer<typeof userSchema>>({
     resolver: zodResolver(userSchema),
@@ -45,20 +46,20 @@ export default function RegisterPage() {
 
   const accountMutation = useMutation({
     mutationFn: async (data) => {
-      const res = await axiosInstance.post("auth/register", data);
+      const res = await axiosInstance.post("/auth/register", data);
 
       return res.data;
     },
     onSuccess: (data) => {
-      useUserStore.getState().setUser(data.data?.user);
+      useUserStore.getState().setUser(data?.user);
 
       reset({
         fullName: "",
         email: "",
         password: "",
       });
-      router.push("/");
-      toast.success("Account created successfully");
+      router.push(`/register/verify?email=${data?.user?.email}`);
+      toast.info("Verify your email");
     },
     onError: (error) => {
       toast.error("Error in creating the account : " + error.message);
@@ -75,7 +76,7 @@ export default function RegisterPage() {
   };
   return (
     <section className="w-full h-auto flex justify-center items-center bg-[#f8f6fc] pb-8">
-      <div className="lg:w-[35%] h-full flex flex-col gap-5 justify-center items-center pt-8">
+      <div className="w-full md:w-[45%] lg:w-[35%] h-full flex flex-col gap-5 justify-center items-center pt-8">
         <div className="flex justify-start items-center gap-2">
           <div className="w-5 h-5 flex justify-center items-center">
             <svg
@@ -155,7 +156,7 @@ export default function RegisterPage() {
                       <Button
                         type="submit"
                         className="bg-[#f87941]"
-                        disabled={!isValid}
+                        disabled={!isValid || accountMutation.isPending}
                       >
                         Create Account
                       </Button>
